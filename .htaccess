@@ -1,0 +1,10 @@
+
+LogLevel debug
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /api-cabinet/
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^.*$ api.php [QSA,L]
+</IfModule>
