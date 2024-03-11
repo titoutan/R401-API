@@ -9,5 +9,6 @@
 
   //On monte les controlleurs
   $app->mount('/usagers', include 'Controller/UsagerController.php');
+  $app->mount('/medecins', include 'Controller/MedecinController.php');
 
   $app->run();

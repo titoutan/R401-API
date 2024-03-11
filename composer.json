@@ -1,11 +1,5 @@
 {
     "require": {
-        "silex/silex": "^2.3",
-        "illuminate/database": "5.2"
-    },
-    "config": {
-        "allow-plugins": {
-            "kylekatarnls/update-helper": true
-        }
+        "silex/silex": "^2.3"
     }
 }

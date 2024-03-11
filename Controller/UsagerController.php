@@ -15,7 +15,7 @@
 
     $data = json_decode($request->getContent(), true);
 
-    validateInput($data, $app);
+    validateUsagerInput($data, $app);
 
     $usager = new Usager();
     $usager->setCivilite($app->escape($data['civilite']));
@@ -61,7 +61,7 @@
 
   return $usagers;
 
-  function validateInput($data, $app) {
+  function validateUsagerInput($data, $app) {
     if (
       !isset($data['civilite']) || 
       !isset($data['nom']) || 
