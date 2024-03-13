@@ -6,6 +6,12 @@
 
   $medecins = $app['controllers_factory'];
 
+  $app->before(
+    function (Request $request) use ($app) {
+      get_bearer_token();
+    }
+  );
+
   $medecins->get('/', function() use ($app) {
     $liste_medecins = Medecin::all();
     return $app->json($liste_medecins,200);
@@ -34,6 +40,9 @@
   });
 
   $medecins->patch('/{medecin}', function(Request $request, $medecin) use ($app) {
+    if (!$medecin) {
+      return $app->json('[R401 Rest API] Medecin introuvable',404);
+    }
     $data = json_decode($request->getContent(), true);
     $medecin = $medecin->toArray();
     foreach ($data as $key => $value) {
@@ -48,6 +57,9 @@
   });
   
   $medecins->delete('/{medecin}', function($medecin) use ($app) {
+    if (!Medecin::get($medecin)) {
+      return $app->json('[R401 Rest API] Medecin introuvable',404);
+    }
     Medecin::delete($medecin);
     return $app->json($medecin,200);
   });

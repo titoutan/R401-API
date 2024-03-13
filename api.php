@@ -1,6 +1,7 @@
 <?php
   require_once __DIR__ . '/vendor/autoload.php';
   require_once __DIR__ . '/Model/Usager.php';
+  require_once __DIR__ . 'utils.php';
 
   use Silex\Application;
 

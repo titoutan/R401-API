@@ -34,13 +34,16 @@
   });
 
   $usagers->get('/{usager}', function($usager) use ($app) {
-    return $app->json($usager->toArray(),200);
+    return $usager ? $app->json($usager->toArray(),200) : $app->json('[R401 Rest API] Usager introuvable',404);
   })
   ->convert('usager', function($usager) {
     return Usager::get($usager);
   });
 
   $usagers->patch('/{usager}', function(Request $request, $usager) use ($app) {
+    if (!$usager) {
+      return $app->json('[R401 Rest API] Usager introuvable',404);
+    }
     $data = json_decode($request->getContent(), true);
     $usager = $usager->toArray();
     foreach ($data as $key => $value) {
@@ -55,6 +58,9 @@
   });
   
   $usagers->delete('/{usager}', function($usager) use ($app) {
+    if (!Usager::get($usager)) {
+      return $app->json('[R401 Rest API] Usager introuvable',404);
+    }
     Usager::delete($usager);
     return $app->json($usager,200);
   });
