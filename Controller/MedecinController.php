@@ -6,12 +6,6 @@
 
   $medecins = $app['controllers_factory'];
 
-  $app->before(
-    function (Request $request) use ($app) {
-      get_bearer_token();
-    }
-  );
-
   $medecins->get('/', function() use ($app) {
     $liste_medecins = Medecin::all();
     return $app->json($liste_medecins,200);

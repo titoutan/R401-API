@@ -26,10 +26,10 @@ function get_bearer_token() {
     if (!empty($headers)) {
         if (preg_match('/Bearer\s(\S+)/', $headers, $matches)) {
             if($matches[1]=='null') //$matches[1] est de type string et peut contenir 'null'
-                return null;
+                return false;
             else
                 return $matches[1];
         }
     }
-    return null;
+    return false;
 }
