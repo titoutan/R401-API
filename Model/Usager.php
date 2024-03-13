@@ -20,6 +20,9 @@
     public static function update(Usager $usager) {
       return self::getDao()->update($usager);
     }
+    public static function getByNumero(string $num_secu) {
+      return self::getDao()->getByNumero($num_secu);
+    }
     private int $id_usager;
     private string $civilite;
     private string $nom;
@@ -31,6 +34,7 @@
     private DateTimeImmutable $date_nais;
     private string $lieu_nais;
     private string $num_secu;
+    private int $id_medecin;
 
     public function __construct(array $data = []) {
       if (
@@ -59,22 +63,29 @@
       if (isset($data['id_usager'])) {
         $this->id_usager = $data['id_usager'];
       }
+      if (isset($data['id_medecin'])) {
+        $this->id_medecin = $data['id_medecin'];
+      }
     }
 
     public function toArray(): array {
-        return [
-            'id_usager' => $this->id_usager,
-            'civilite' => $this->civilite,
-            'nom' => $this->nom,
-            'prenom' => $this->prenom,
-            'sexe' => $this->sexe,
-            'adresse' => $this->adresse,
-            'code_postal' => $this->code_postal,
-            'ville' => $this->ville,
-            'date_nais' => $this->date_nais,
-            'lieu_nais' => $this->lieu_nais,
-            'num_secu' => $this->num_secu  
-        ];
+      $output = [
+        'id_usager' => $this->id_usager,
+        'civilite' => $this->civilite,
+        'nom' => $this->nom,
+        'prenom' => $this->prenom,
+        'sexe' => $this->sexe,
+        'adresse' => $this->adresse,
+        'code_postal' => $this->code_postal,
+        'ville' => $this->ville,
+        'date_nais' => $this->date_nais->format('d/m/Y'),
+        'lieu_nais' => $this->lieu_nais,
+        'num_secu' => $this->num_secu
+      ];
+      if (isset($this->id_medecin)) {
+        $output['id_medecin'] = $this->id_medecin;
+      }
+      return $output;
     }
 
     public function getIdUsager(): int {
@@ -163,5 +174,17 @@
 
     public function setNumSecu(string $num_secu): void {
         $this->num_secu = $num_secu;
+    }
+
+    public function hasMedecin(): bool {
+      return isset($this->id_medecin);
+    }
+
+    public function getIdMedecin(): int {
+        return $this->id_medecin;
+    }
+
+    public function setIdMedecin(int $id_medecin): void {
+        $this->id_medecin = $id_medecin;
     }
 }

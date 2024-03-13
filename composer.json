@@ -1,5 +1,10 @@
 {
     "require": {
         "silex/silex": "^2.3"
+    },
+    "config": {
+        "allow-plugins": {
+            "kylekatarnls/update-helper": false
+        }
     }
 }
