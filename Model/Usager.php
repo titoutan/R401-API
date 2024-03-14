@@ -5,22 +5,22 @@
     private static function getDao() {
       return self::$dao ?? self::$dao = new UsagerDao();
     }
-    public static function all() {
+    public static function all() : array{
       return self::getDao()->findAll();
     }
-    public static function add(Usager $usager) {
+    public static function add(Usager $usager) : Usager | Bool {
       return self::getDao()->add($usager);
     }
-    public static function get(int $id) {
+    public static function get(int $id) : Usager | Bool {
       return self::getDao()->get($id);
     }
     public static function delete(int $id) {
       return self::getDao()->delete($id);
     }
-    public static function update(Usager $usager) {
+    public static function update(Usager $usager) : Usager | Bool {
       return self::getDao()->update($usager);
     }
-    public static function getByNumero(string $num_secu) {
+    public static function getByNumero(string $num_secu) : Usager | Bool {
       return self::getDao()->getByNumero($num_secu);
     }
     private int $id_usager;

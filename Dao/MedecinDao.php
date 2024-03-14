@@ -11,7 +11,7 @@
       $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
       return $result;
     }
-    public function add(Medecin $medecin) {
+    public function add(Medecin $medecin) : Medecin | Bool {
       $query = 'INSERT INTO medecin (civilite, nom, prenom) VALUES (:civilite, :nom, :prenom)';
       $stmt = $this->pdo->prepare($query);
       $stmt->bindValue(':civilite', $medecin->getCivilite());
@@ -38,7 +38,7 @@
       $stmt->bindValue(':id', $id);
       return $stmt->execute();
     }
-    public function update(Medecin $medecin) {
+    public function update(Medecin $medecin) : Medecin | Bool {
       $query = 'UPDATE usager SET civilite = :civilite, nom = :nom, prenom = :prenom WHERE id_usager = :id';
       $stmt = $this->pdo->prepare($query);
       $stmt->bindValue(':civilite', $medecin->getCivilite());

@@ -15,7 +15,7 @@
       }
       return $output;
     }
-    public function add(Usager $usager) {
+    public function add(Usager $usager) : Usager | Bool {
       $query = 'INSERT INTO usager (civilite, nom, prenom, sexe, adresse, code_postal, ville, date_nais, lieu_nais, num_secu) VALUES (:civilite, :nom, :prenom, :sexe, :adresse, :code_postal, :ville, :date_nais, :lieu_nais, :num_secu)';
       $stmt = $this->pdo->prepare($query);
       $stmt->bindValue(':civilite', $usager->getCivilite());
@@ -57,7 +57,7 @@
       $stmt->bindValue(':id', $id);
       return $stmt->execute();
     }
-    public function update(Usager $usager) {
+    public function update(Usager $usager) : Usager | Bool {
       $query = 'UPDATE usager SET civilite = :civilite, nom = :nom, prenom = :prenom, sexe = :sexe, adresse = :adresse, code_postal = :code_postal, ville = :ville, date_nais = :date_nais, lieu_nais = :lieu_nais, num_secu = :num_secu WHERE id_usager = :id';
       $stmt = $this->pdo->prepare($query);
       $stmt->bindValue(':civilite', $usager->getCivilite());
@@ -80,7 +80,7 @@
       }
       return $this->get($usager->getIdUsager());
     }
-    public function getByNumero($numero) {
+    public function getByNumero($numero) : Usager | Bool {
       $query = 'SELECT * FROM usager WHERE num_secu = :numero';
       $stmt = $this->pdo->prepare($query);
       $stmt->bindValue(':numero', $numero);

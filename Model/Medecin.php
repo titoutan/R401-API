@@ -6,19 +6,19 @@
     private static function getDao() {
       return self::$dao ?? self::$dao = new MedecinDao();
     }
-    public static function all() {
+    public static function all() : array {
       return self::getDao()->findAll();
     }
-    public static function add(Medecin $medecin) {
+    public static function add(Medecin $medecin) : Medecin | Bool {
       return self::getDao()->add($medecin);
     }
-    public static function get(int $id) {
+    public static function get(int $id) : Medecin | Bool {
       return self::getDao()->get($id);
     }
     public static function delete(int $id) {
       return self::getDao()->delete($id);
     }
-    public static function update(Medecin $medecin) {
+    public static function update(Medecin $medecin) : Medecin | Bool {
       return self::getDao()->update($medecin);
     }
     private int $id_medecin;
