@@ -6,7 +6,7 @@
       $this->pdo = Connexion::getInstance()->getPdo();
     }
     public function findAll(): array {
-      $query = 'SELECT * FROM usager';
+      $query = 'SELECT * FROM usager ORDER BY id_usager';
       $stmt = $this->pdo->query($query);
       $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
       $output = [];

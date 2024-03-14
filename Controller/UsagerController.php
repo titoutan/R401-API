@@ -9,7 +9,7 @@
 
   $usagers->get('/', function() use ($app) {
     $liste_usagers = Usager::all();
-    return $app->json($liste_usagers,200);
+    return $app->json($liste_usagers,200,['Status-Message' => '[R401 Rest API] Liste des usagers']);
   });
   
   $usagers->post('/', function(Request $request) use ($app) {
@@ -34,11 +34,11 @@
     $usager->setNumSecu($app->escape($data['num_secu']));
     
     $usager = Usager::add($usager);
-    return $app->json($usager->toArray(),201);
+    return $app->json($usager->toArray(),201,['Status-Message' => '[R401 Rest API] Usager ajouté']);
   });
 
   $usagers->get('/{usager}', function($usager) use ($app) {
-    return $usager ? $app->json($usager->toArray(),200) : $app->json('[R401 Rest API] Usager introuvable',404);
+    return $usager ? $app->json($usager->toArray(),200,['Status-Message' => '[R401 Rest API] Usager trouvé']) : $app->json(null,404,['Status-Message' => '[R401 Rest API] Usager introuvable']);
   })
   ->convert('usager', function($usager) {
     return Usager::get($usager);
@@ -46,7 +46,7 @@
 
   $usagers->patch('/{usager}', function(Request $request, $usager) use ($app) {
     if (!$usager) {
-      return $app->json('[R401 Rest API] Usager introuvable',404);
+      return $app->json(null,404,['Status-Message' => '[R401 Rest API] Usager introuvable']);
     }
     $data = json_decode($request->getContent(), true);
     $erreurChamps = validateUsagerInput($data, $app);
@@ -59,7 +59,7 @@
     }
     $usager = new Usager($usager);
     $usager = Usager::update($usager);
-    return $app->json($usager->toArray(),200);
+    return $app->json($usager->toArray(),200,['Status-Message' => '[R401 Rest API] Usager introuvable']);
   })
   ->convert('usager', function($usager) {
     return Usager::get($usager);
@@ -67,10 +67,10 @@
   
   $usagers->delete('/{usager}', function($usager) use ($app) {
     if (!Usager::get($usager)) {
-      return $app->json('[R401 Rest API] Usager introuvable',404);
+      return $app->json(null,404,['Status-Message' => '[R401 Rest API] Usager introuvable']);
     }
     Usager::delete($usager);
-    return $app->json($usager,200);
+    return $app->json($usager,200,['Status-Message' => '[R401 Rest API] Usager supprimé']);
   });
 
   return $usagers;
@@ -88,23 +88,23 @@
       !isset($data['lieu_nais']) || 
       !isset($data['num_secu']) 
       ) {
-      return $app->json('[R401 Rest API] Paramètre(s) manquant(s) pour créer un usager',400);
+      return $app->json(null,400,['Status-Message' => '[R401 Rest API] Paramètre(s) manquant(s) pour créer un usager']);
     }
     //format de la date
     if (!$date_nais = date_create_immutable_from_format('d/m/Y', $data['date_nais'])) {
-      return $app->json('[R401 Rest API] format date invalide',400);
+      return $app->json(null,400,['Status-Message' => '[R401 Rest API] format date invalide']);
     }
     if (!array_search($data['civilite'], array('M.', 'Mme.', 'Mlle.')) && array_search($data['civilite'], array('M.', 'Mme.', 'Mlle.')) !== 0) {
-      return $app->json('[R401 Rest API] Civilité invalide',400);
+      return $app->json(null,400,['Status-Message' => '[R401 Rest API] Civilité invalide']);
     }
     if ((!preg_match('/[12][0-9]{12}/', $data['num_secu']) || Usager::getByNumero($data['num_secu']))) {
-      return $app->json('[R401 Rest API] Numéro de sécurité sociale invalide',400);
+      return $app->json(null,400,['Status-Message' => '[R401 Rest API] Numéro de sécurité sociale invalide']);
     }
     if (!preg_match('/[0-9]{5}/', $data['code_postal'])) {
-      return $app->json('[R401 Rest API] Code postal invalide',400);
+      return $app->json(null,400,['Status-Message' => '[R401 Rest API] Code postal invalide']);
     }
     if (isset($data['id_medecin']) && !Medecin::get($data['id_medecin'])) {
-      return $app->json('[R401 Rest API] Medecin introuvable',404);
+      return $app->json(null,404,['Status-Message' => '[R401 Rest API] Medecin introuvable']);
     }
     return false;
   }

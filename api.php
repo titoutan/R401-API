@@ -5,6 +5,7 @@
 
   use Silex\Application;
   use Symfony\Component\HttpFoundation\Request;
+  use Symfony\Component\HttpFoundation\Response;
 
   $app = new Application();
   $app['debug'] = true;
@@ -12,7 +13,7 @@
   $app->before(
     function (Request $request) use ($app) {
       if (!$token = get_bearer_token()) {
-        return $app->json('[R401 Rest API] Bearer token manquant', 401);
+        return $app->json(null, 401, ['Status-Message' => '[R401 Rest API] Bearer token manquant']);
       }
 
       $curl_handle=curl_init();
@@ -23,15 +24,29 @@
       $result = curl_exec($curl_handle);
       curl_close($curl_handle);
       if ($result === false) {
-        return $app->json('[R401 Rest API] Erreur de connexion', 500);
+        return $app->json(null, 500, ['Status-Message' => '[R401 Rest API] Erreur de connexion']);
       }
       $result = json_decode($result,true);
       if ($result['data']) {
         return;
       }
       else {
-        return $app->json('[R401 Rest API] Token invalide', 403);
+        return $app->json(null, 403, ['Status-Message' => '[R401 Rest API] Token invalide']);
       }
+    }
+  );
+
+  $app->after(
+    function(Request $request, Response $response) {
+      $response->headers->set('Access-Control-Allow-Origin', '*');
+      $data = json_decode($response->getContent(),true);
+      $status_code = $response->getStatusCode();
+      $status_message = $response->headers->get('Status-Message');
+      $body = ['status_code' => $status_code, 'status_message' => $status_message];
+      if (!empty($data)) {
+        $body['data'] = $data;
+      }
+      $response->setContent(json_encode($body));
     }
   );
 
