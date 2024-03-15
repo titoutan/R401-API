@@ -33,6 +33,11 @@
       return $result ? new Medecin($result) : false;
     }
     public function delete(int $id) {
+      $daoConsult = new ConsultationDao();
+      $array = $daoConsult->getAllIdConsultationByMedecin($id);
+      foreach ($array as $cle => $valeur) {
+          $daoConsult->delete($valeur);
+      }
       $query = 'DELETE FROM medecin WHERE id_medecin = :id';
       $stmt = $this->pdo->prepare($query);
       $stmt->bindValue(':id', $id);

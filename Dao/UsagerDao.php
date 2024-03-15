@@ -52,6 +52,11 @@
       return new Usager($result);
     }
     public function delete(int $id) {
+      $daoConsult = new ConsultationDao();
+      $array = $daoConsult->getAllIdConsultationByUsager($id);
+      foreach ($array as $cle => $valeur) {
+          $daoConsult->delete($valeur);
+      }
       $query = 'DELETE FROM usager WHERE id_usager = :id';
       $stmt = $this->pdo->prepare($query);
       $stmt->bindValue(':id', $id);

@@ -90,5 +90,23 @@ class ConsultationDao{
         $stmt->bindValue(':id', $id);
         return $stmt->execute();
     }
+
+    public function getAllIdConsultationByMedecin(int $idMedecin) {
+        $query = 'SELECT id_consult FROM consultation WHERE id_medecin = :id_medecin';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(':id_medecin', $idMedecin);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function getAllIdConsultationByUsager(int $idUsager) {
+        $query = 'SELECT id_consult FROM consultation WHERE id_usager = :id_usager';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(':id_usager', $idUsager);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
     
 }
