@@ -38,15 +38,15 @@
 
     public function __construct(array $data = []) {
       if (
-        isset($data['civilite']) || 
-        isset($data['nom']) || 
-        isset($data['prenom']) || 
-        isset($data['sexe']) || 
-        isset($data['adresse']) || 
-        isset($data['code_postal']) || 
-        isset($data['ville']) || 
-        isset($data['date_nais']) || 
-        isset($data['lieu_nais']) || 
+        isset($data['civilite']) && 
+        isset($data['nom']) && 
+        isset($data['prenom']) && 
+        isset($data['sexe']) && 
+        isset($data['adresse']) && 
+        isset($data['code_postal']) && 
+        isset($data['ville']) && 
+        isset($data['date_nais']) && 
+        isset($data['lieu_nais']) &&
         isset($data['num_secu']) 
         ) {
         $this->civilite = $data['civilite'];

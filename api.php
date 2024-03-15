@@ -10,12 +10,13 @@
   $app = new Application();
   $app['debug'] = true;
   
+  //Vérification de la connexion de l'utilisateur
   $app->before(
-    function (Request $request) use ($app) {
+    function () use ($app) {
       if (!$token = get_bearer_token()) {
         return $app->json(null, 401, ['Status-Message' => '[R401 Rest API] Bearer token manquant']);
       }
-
+      //Requête à l'api d'authentification
       $curl_handle=curl_init();
       curl_setopt($curl_handle, CURLOPT_URL,'http://a4authapi.alwaysdata.net?token='.$token);
       curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
@@ -23,10 +24,12 @@
       curl_setopt($curl_handle, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
       $result = curl_exec($curl_handle);
       curl_close($curl_handle);
+      //Si la requête à échoué (ne devrait jamais apparaître)
       if ($result === false) {
         return $app->json(null, 500, ['Status-Message' => '[R401 Rest API] Erreur de connexion']);
       }
       $result = json_decode($result,true);
+      //Si le token est valide, l'api d'authentification renvoie true, sinon false
       if ($result['data']) {
         return;
       }
@@ -36,6 +39,7 @@
     }
   );
 
+  //Formatage de la reponse
   $app->after(
     function(Request $request, Response $response) {
       $response->headers->set('Access-Control-Allow-Origin', '*');
