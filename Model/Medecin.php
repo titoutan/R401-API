@@ -28,8 +28,8 @@
 
     public function __construct(array $data = []) {
       if (
-        isset($data['civilite']) || 
-        isset($data['nom']) || 
+        isset($data['civilite']) &&
+        isset($data['nom']) && 
         isset($data['prenom'])
         ) {
         $this->civilite = $data['civilite'];
