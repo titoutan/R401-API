@@ -4,18 +4,20 @@
 
   use Symfony\Component\HttpFoundation\Request;
 
-  $medecins = $app['controllers_factory'];
+  $consultations = $app['controllers_factory'];
 
-  $medecins->get('/', function() use ($app) {
+  $consultations->get('/', function() use ($app) {
     $liste_medecins = Medecin::all();
-    return $app->json($liste_medecins,200,['Status-Message' => '[R401 Rest API] Medecin introuvable']);
+    return $app->json($liste_medecins,200,['Status-Message' => '[R401 Rest API] Liste des médecins']);
   });
   
-  $medecins->post('/', function(Request $request) use ($app) {
+  $consultations->post('/', function(Request $request) use ($app) {
 
     $data = json_decode($request->getContent(), true);
 
-    validateMedecinInput($data, $app);
+    if ($err = validateMedecinInput($data, $app)) {
+      return $err;
+    }
 
     $medecin = new Medecin();
     $medecin->setCivilite($app->escape($data['civilite']));
@@ -26,18 +28,21 @@
     return $app->json($medecin->toArray(),201,['Status-Message' => '[R401 Rest API] Medecin ajouté']);
   });
 
-  $medecins->get('/{medecin}', function($medecin) use ($app) {
+  $consultations->get('/{medecin}', function($medecin) use ($app) {
     return $medecin ? $app->json($medecin->toArray(),200,['Status-Message' => '[R401 Rest API] Medecin trouvé']) : $app->json(null,404,['Status-Message' => '[R401 Rest API] Medecin introuvable']);
   })
   ->convert('medecin', function($medecin) {
     return Medecin::get($medecin);
   });
 
-  $medecins->patch('/{medecin}', function(Request $request, $medecin) use ($app) {
+  $consultations->patch('/{medecin}', function(Request $request, $medecin) use ($app) {
     if (!$medecin) {
       return $app->json(null,404,['Status-Message' => '[R401 Rest API] Medecin introuvable']);
     }
     $data = json_decode($request->getContent(), true);
+    if ($err = validateMedecinInput($data, $app)) {
+      return $err;
+    }
     $medecin = $medecin->toArray();
     foreach ($data as $key => $value) {
       $medecin[$key] = $app->escape($value);
@@ -50,7 +55,7 @@
     return Medecin::get($medecin);
   });
   
-  $medecins->delete('/{medecin}', function($medecin) use ($app) {
+  $consultations->delete('/{medecin}', function($medecin) use ($app) {
     if (!Medecin::get($medecin)) {
       return $app->json(null,404,['Status-Message' => '[R401 Rest API] Medecin introuvable']);
     }
@@ -58,7 +63,7 @@
     return $app->json($medecin,200,['Status-Message' => '[R401 Rest API] Medecin supprimé']);
   });
 
-  return $medecins;
+  return $consultations;
 
   function validateMedecinInput($data, $app) {
     if (

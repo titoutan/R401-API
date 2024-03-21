@@ -1,6 +1,32 @@
 <?php
+require_once __DIR__ . '/../Dao/ConsultationDao.php';
 
 class Consultation{
+  private static $dao;
+  private static function getDao() {
+    return self::$dao ?? self::$dao = new ConsultationDao();
+  }
+  public static function all() {
+    return self::getDao()->findAll();
+  }
+  public static function add(Consultation $consultation) : Consultation | Bool {
+    return self::getDao()->add($consultation);
+  }
+  public static function get(int $id) : Consultation | Bool {
+    return self::getDao()->getById($id);
+  }
+  public static function delete(int $id) {
+    return self::getDao()->delete($id);
+  }
+  public static function update(Consultation $consultation) : Consultation | Bool {
+    return self::getDao()->update($consultation);
+  }
+  public static function getByMedecinAndDate(int $idMedecin, DateTimeImmutable $date) : array | Bool {
+    return self::getDao()->getConsultationByMedecinForDate($idMedecin, $date);
+  }
+  public static function getByUsagerAndDate(int $idUsager, DateTimeImmutable $date) : array | Bool {
+    return self::getDao()->getConsultationByUsagerForDate($idUsager, $date);
+  }
 
     private int $id_consult;
     private int $id_medecin;

@@ -47,17 +47,27 @@ class ConsultationDao{
         $query = 'SELECT * FROM consultation WHERE id_medecin = :idMedecin AND date_consult = :dateParam';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':idMedecin', $idMedecin);
-        $stmt->bindValue(':dateParam', $dateParam);
+        $stmt->bindValue(':dateParam', $dateParam->format('Y-m-d'));
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    public function getConsultationByUsagerForDate($idUsager,$dateParam): array {
+        $query = 'SELECT * FROM consultation WHERE id_usager = :idUsager AND date_consult = :dateParam';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(':idUsager', $idUsager);
+        $stmt->bindValue(':dateParam', $dateParam->format('Y-m-d'));
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
 
     public function add(Consultation $consultation){
         $query = 'INSERT INTO consultation (date_consult,heure_consult,duree_consult,id_medecin,id_usager) VALUES (:date_consult,:heure_consult,:duree_consult,:id_medecin,:id_usager)';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue(':date_consult', $consultation->getDateConsult());
-        $stmt->bindValue(':heure_consult', $consultation->getHeureConsult());
+        $stmt->bindValue(':date_consult', $consultation->getDateConsult()->format('Y-m-d'));
+        $stmt->bindValue(':heure_consult', $consultation->getHeureConsult()->format('H:i'));
         $stmt->bindValue(':duree_consult', $consultation->getDuree());
         $stmt->bindValue(':id_medecin', $consultation->getIdMedecin());
         $stmt->bindValue(':id_usager', $consultation->getIdUsager());
@@ -73,8 +83,8 @@ class ConsultationDao{
     public function update(Consultation $consultation) {
         $query = 'UPDATE consultation SET date_consult = :date_consult, heure_consult = :heure_consult, id_medecin = :id_medecin, id_usager = :id_usager, :duree = duree_consult WHERE id_consult = :id_consult';
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue(':date_consult', $consultation->getDateConsult());
-        $stmt->bindValue(':heure_consult', $consultation->getHeureConsult());
+        $stmt->bindValue(':date_consult', $consultation->getDateConsult()->format('Y-m-d'));
+        $stmt->bindValue(':heure_consult', $consultation->getHeureConsult()->format('H:i'));
         $stmt->bindValue(':duree_consult', $consultation->getDuree());
         $stmt->bindValue(':id_medecin', $consultation->getIdMedecin());
         $stmt->bindValue(':id_usager', $consultation->getIdUsager());

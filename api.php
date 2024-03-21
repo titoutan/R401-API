@@ -57,6 +57,7 @@
   //On monte les controlleurs
   $app->mount('/usagers', include 'Controller/UsagerController.php');
   $app->mount('/medecins', include 'Controller/MedecinController.php');
+  $app->mount('/consultations', include 'Controller/ConsultationController.php');
   $app->mount('/stats', include 'Controller/StatistiquesController.php');
 
   $app->run();

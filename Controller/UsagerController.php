@@ -97,14 +97,17 @@
     if (!array_search($data['civilite'], array('M.', 'Mme.', 'Mlle.')) && array_search($data['civilite'], array('M.', 'Mme.', 'Mlle.')) !== 0) {
       return $app->json(null,400,['Status-Message' => '[R401 Rest API] Civilité invalide']);
     }
-    if ((!preg_match('/[12][0-9]{12}/', $data['num_secu']) || Usager::getByNumero($data['num_secu']))) {
+    if (!preg_match('/[12][0-9]{12}/', $data['num_secu'])) {
       return $app->json(null,400,['Status-Message' => '[R401 Rest API] Numéro de sécurité sociale invalide']);
+    }
+    if (Usager::getByNumero($data['num_secu'])) {
+      return $app->json(null,409,['Status-Message' => '[R401 Rest API] Numéro de sécurité sociale déjà attribué']);
     }
     if (!preg_match('/[0-9]{5}/', $data['code_postal'])) {
       return $app->json(null,400,['Status-Message' => '[R401 Rest API] Code postal invalide']);
     }
     if (isset($data['id_medecin']) && !Medecin::get($data['id_medecin'])) {
-      return $app->json(null,404,['Status-Message' => '[R401 Rest API] Medecin introuvable']);
+      return $app->json(null,400,['Status-Message' => '[R401 Rest API] Medecin introuvable']);
     }
     return false;
   }
