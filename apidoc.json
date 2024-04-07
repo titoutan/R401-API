@@ -1,0 +1,9 @@
+{
+  "name": "Cabinet Brando-Pelletier",
+  "version": "1.5.2",
+  "description": "API du cabinet R401",
+  "apidoc": {
+    "title": "Doc R401",
+    "url" : "https://a4cabinetapi.alwaysdata.net"
+  }
+}

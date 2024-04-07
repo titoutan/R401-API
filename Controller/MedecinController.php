@@ -15,7 +15,7 @@
 
     $data = json_decode($request->getContent(), true);
 
-    if ($err = validateMedecinInput($data, $app)) {
+    if ($err = validateMedecinInput($data, $app,true)) {
       return $err;
     }
 
@@ -40,7 +40,7 @@
       return $app->json(null,404,['Status-Message' => '[R401 Rest API] Medecin introuvable']);
     }
     $data = json_decode($request->getContent(), true);
-    if ($err = validateMedecinInput($data, $app)) {
+    if ($err = validateMedecinInput($data, $app,false)) {
       return $err;
     }
     $medecin = $medecin->toArray();
@@ -49,7 +49,7 @@
     }
     $medecin = new Medecin($medecin);
     $medecin = Medecin::update($medecin);
-    return $app->json($medecin->toArray(),200);
+    return $app->json($medecin->toArray(),200, ['Status-Message' => '[R401 Rest API] Medecin modifié']);
   })
   ->convert('medecin', function($medecin) {
     return Medecin::get($medecin);
@@ -65,15 +65,15 @@
 
   return $consultations;
 
-  function validateMedecinInput($data, $app) {
-    if (
+  function validateMedecinInput($data, $app, $strict = true) {
+    if ((
       !isset($data['civilite']) || 
       !isset($data['nom']) || 
       !isset($data['prenom'])
-      ) {
+      ) && $strict) {
       return $app->json(null, 400,['Status-Message' => '[R401 Rest API] Paramètre(s) manquant(s) pour créer un medecin']);
     }
-    if (!array_search($data['civilite'], array('M.', 'Mme.', 'Mlle.')) && array_search($data['civilite'], array('M.', 'Mme.', 'Mlle.')) !== 0) {
+    if (isset($data['civilite']) && !array_search($data['civilite'], array('M.', 'Mme.', 'Mlle.')) && array_search($data['civilite'], array('M.', 'Mme.', 'Mlle.')) !== 0) {
       return $app->json(null, 400, ['Status-Message' => '[R401 Rest API] Civilité invalide']);
     }
   }

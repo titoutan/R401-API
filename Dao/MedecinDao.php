@@ -44,7 +44,7 @@
       return $stmt->execute();
     }
     public function update(Medecin $medecin) : Medecin | Bool {
-      $query = 'UPDATE usager SET civilite = :civilite, nom = :nom, prenom = :prenom WHERE id_usager = :id';
+      $query = 'UPDATE medecin SET civilite = :civilite, nom = :nom, prenom = :prenom WHERE id_medecin = :id';
       $stmt = $this->pdo->prepare($query);
       $stmt->bindValue(':civilite', $medecin->getCivilite());
       $stmt->bindValue(':nom', $medecin->getNom());

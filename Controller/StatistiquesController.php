@@ -10,8 +10,13 @@
 
     $stats->get('/medecins', function() use ($app) {
         $daoStat = new StatistiqueDao();
+      
         $stats_medecins = $daoStat->getStatistiquesMedecins();
-        return $app->json($stats_medecins,200);
+        $tabRetour = [];
+        foreach($stats_medecins as $truc) {
+          $tabRetour[$truc['id']] = $truc['DureeTotaleConsult'];
+        }
+        return $app->json($tabRetour,200);
       });
 
     $stats->get('/usagers', function() use ($app) {

@@ -1,11 +1,11 @@
 <?php
 
 class Connexion {
-    private static $host = "localhost";
-    private static $username = "default";
-    private static $password = "password";
-    private static $database = "api-cabinet";
-    private static $port = "3308";
+    private static $host = "mysql-a4cabinetapi.alwaysdata.net";
+    private static $username = "350742";
+    private static $password = '$iutinfo';
+    private static $database = "a4cabinetapi_cabinet";
+    private static $port = "3306";
     private static $_instance = null;
     private PDO $linkpdo;
 

@@ -82,7 +82,7 @@
         'lieu_nais' => $this->lieu_nais,
         'num_secu' => $this->num_secu
       ];
-      if (isset($this->id_medecin)) {
+      if ($this->hasMedecin()) {
         $output['id_medecin'] = $this->id_medecin;
       }
       return $output;

@@ -45,14 +45,15 @@
     }
     $data = json_decode($request->getContent(), true);
 
-    if ($err = validateConsultationInput($data, $app)) {
-      return $err;
-    }
-
     $consultation = $consultation->toArray();
     foreach ($data as $key => $value) {
       $consultation[$key] = $app->escape($value);
     }
+
+    if ($err = validateConsultationInput($consultation, $app)) {
+      return $err;
+    }
+
     $consultation = new Consultation($consultation);
     $consultation = Consultation::update($consultation);
     return $app->json($consultation->toArray(),200,['Status-Message' => '[R401 Rest API] Consultation modifiée']);

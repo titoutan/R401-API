@@ -16,7 +16,7 @@
 
     $data = json_decode($request->getContent(), true);
 
-    $erreurChamps = validateUsagerInput($data, $app);
+    $erreurChamps = validateUsagerInput($data, $app, true);
     if ($erreurChamps) {
       return $erreurChamps;
     }
@@ -32,6 +32,9 @@
     $usager->setDateNais(date_create_immutable_from_format('d/m/Y', $app->escape($data['date_nais'])));
     $usager->setLieuNais($app->escape($data['lieu_nais']));
     $usager->setNumSecu($app->escape($data['num_secu']));
+    if (isset($data['id_medecin'])) {
+      $usager->setIdMedecin($app->escape($data['id_medecin']));
+    }
     
     $usager = Usager::add($usager);
     return $app->json($usager->toArray(),201,['Status-Message' => '[R401 Rest API] Usager ajouté']);
@@ -49,7 +52,7 @@
       return $app->json(null,404,['Status-Message' => '[R401 Rest API] Usager introuvable']);
     }
     $data = json_decode($request->getContent(), true);
-    $erreurChamps = validateUsagerInput($data, $app);
+    $erreurChamps = validateUsagerInput($data, $app, false);
     if ($erreurChamps) {
       return $erreurChamps;
     }
@@ -75,8 +78,8 @@
 
   return $usagers;
 
-  function validateUsagerInput($data, $app) {
-    if (
+  function validateUsagerInput($data, $app, $strict = true) {
+    if ((
       !isset($data['civilite']) || 
       !isset($data['nom']) || 
       !isset($data['prenom']) || 
@@ -87,27 +90,30 @@
       !isset($data['date_nais']) || 
       !isset($data['lieu_nais']) || 
       !isset($data['num_secu']) 
-      ) {
+      ) && $strict) {
       return $app->json(null,400,['Status-Message' => '[R401 Rest API] Paramètre(s) manquant(s) pour créer un usager']);
     }
     //format de la date
-    if (!$date_nais = date_create_immutable_from_format('d/m/Y', $data['date_nais'])) {
+    if (isset($data['date_nais']) && !$date_nais = date_create_immutable_from_format('d/m/Y', $data['date_nais'])) {
       return $app->json(null,400,['Status-Message' => '[R401 Rest API] format date invalide']);
     }
-    if (!array_search($data['civilite'], array('M.', 'Mme.', 'Mlle.')) && array_search($data['civilite'], array('M.', 'Mme.', 'Mlle.')) !== 0) {
+    if (isset($data['civilite']) && !array_search($data['civilite'], array('M.', 'Mme.', 'Mlle.')) && array_search($data['civilite'], array('M.', 'Mme.', 'Mlle.')) !== 0) {
       return $app->json(null,400,['Status-Message' => '[R401 Rest API] Civilité invalide']);
     }
-    if (!preg_match('/[12][0-9]{12}/', $data['num_secu'])) {
+    if (isset($data['sexe']) && $data['sexe'] !== 'H' && $data['sexe'] !== 'F') {
+      return $app->json(null,400,['Status-Message' => '[R401 Rest API] Sexe invalide']);
+    }
+    if (isset($data['num_secu']) && !preg_match('/^[12][0-9]{12}$/', $data['num_secu'])) {
       return $app->json(null,400,['Status-Message' => '[R401 Rest API] Numéro de sécurité sociale invalide']);
     }
-    if (Usager::getByNumero($data['num_secu'])) {
+    if (isset($data['num_secu']) && Usager::getByNumero($data['num_secu'])) {
       return $app->json(null,409,['Status-Message' => '[R401 Rest API] Numéro de sécurité sociale déjà attribué']);
     }
-    if (!preg_match('/[0-9]{5}/', $data['code_postal'])) {
+    if (isset($data['code_postal']) && !preg_match('/^[0-9]{5}$/', $data['code_postal'])) {
       return $app->json(null,400,['Status-Message' => '[R401 Rest API] Code postal invalide']);
     }
     if (isset($data['id_medecin']) && !Medecin::get($data['id_medecin'])) {
-      return $app->json(null,400,['Status-Message' => '[R401 Rest API] Medecin introuvable']);
+      return $app->json(null,404,['Status-Message' => '[R401 Rest API] Medecin introuvable']);
     }
     return false;
   }

@@ -18,22 +18,18 @@
       }
       //Requête à l'api d'authentification
       $curl_handle=curl_init();
-      curl_setopt($curl_handle, CURLOPT_URL,'http://a4authapi.alwaysdata.net?token='.$token);
+      curl_setopt($curl_handle, CURLOPT_URL,'http://a4authapi.alwaysdata.net');
       curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
       curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($curl_handle, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+      curl_setopt($curl_handle, CURLOPT_HTTPHEADER, ['Content-Type: application/json',
+                                                    'Authorization: Bearer '.$token]);
       $result = curl_exec($curl_handle);
       curl_close($curl_handle);
       //Si la requête à échoué (ne devrait jamais apparaître)
       if ($result === false) {
         return $app->json(null, 500, ['Status-Message' => '[R401 Rest API] Erreur de connexion']);
       }
-      $result = json_decode($result,true);
-      //Si le token est valide, l'api d'authentification renvoie true, sinon false
-      if ($result['data']) {
-        return;
-      }
-      else {
+      if (curl_getinfo($curl_handle, CURLINFO_HTTP_CODE) != 204) {
         return $app->json(null, 403, ['Status-Message' => '[R401 Rest API] Token invalide']);
       }
     }

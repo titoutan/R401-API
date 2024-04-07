@@ -81,16 +81,18 @@ class ConsultationDao{
     }
 
     public function update(Consultation $consultation) {
-        $query = 'UPDATE consultation SET date_consult = :date_consult, heure_consult = :heure_consult, id_medecin = :id_medecin, id_usager = :id_usager, :duree = duree_consult WHERE id_consult = :id_consult';
+        $query = 'UPDATE consultation SET date_consult = :date_consult, heure_consult = :heure_consult, id_medecin = :id_medecin, id_usager = :id_usager, duree_consult = :duree_consult WHERE id_consult = :id_consult';
         $stmt = $this->pdo->prepare($query);
+
         $stmt->bindValue(':date_consult', $consultation->getDateConsult()->format('Y-m-d'));
         $stmt->bindValue(':heure_consult', $consultation->getHeureConsult()->format('H:i'));
         $stmt->bindValue(':duree_consult', $consultation->getDuree());
         $stmt->bindValue(':id_medecin', $consultation->getIdMedecin());
         $stmt->bindValue(':id_usager', $consultation->getIdUsager());
         $stmt->bindValue(':id_consult', $consultation->getIdConsult());
-
+      
         $stmt->execute();
+      
         return $this->getById($consultation->getIdConsult());
     }
 
